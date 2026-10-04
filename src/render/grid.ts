@@ -40,7 +40,7 @@ function formatTick(v: number, unitName: string): string {
     const a = Math.abs(v);
     // 绝大多数情况 v 在 [1, 1000]，用 toPrecision 去掉尾部多余 0
     if (a >= 1e5 || a < 1e-3) {
-        return `${v.toExponential(1)} ${unitName}`;
+        return `${v.toExponential(3)} ${unitName}`;
     }
     return `${parseFloat(v.toPrecision(6))} ${unitName}`;
 }

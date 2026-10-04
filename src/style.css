@@ -2,3 +2,23 @@ body {
 	background-color: black;
 	color: white;
 }
+
+#speed-control {
+    position: fixed;
+    left: 16px;
+    bottom: 16px;
+    background: rgba(0, 0, 0, 0.7);
+    border: 1px solid #333;
+    border-radius: 6px;
+    padding: 10px 14px;
+    color: #ccc;
+    user-select: none;
+    z-index: 10;
+}
+
+#speed-control input[type="range"] {
+    display: block;
+    width: 320px;
+    margin-top: 6px;
+    accent-color: #008cff;
+}

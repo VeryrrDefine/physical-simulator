@@ -3,11 +3,19 @@ import { mouse } from './mouse';
 import { WORLD } from './physic/world';
 import { initRenderer, renderGame } from './render/render';
 import './style.css';
-import { loop } from './physic';
+import { loop, setTimeScale } from './physic';
 import { VIEW } from './render/view';
+import { formatSpeed } from './render/formatNumber';
+import { pager } from './render/ui';
 
 let canvas: HTMLCanvasElement;
 let assets: HTMLImageElement;
+const slider = document.getElementById('speed-slider') as HTMLInputElement;
+const label  = document.getElementById('speed-value')!;
+
+const SLIDER_MIN = 1;                        // 1 模拟秒 / 实际秒
+const SLIDER_MAX = 0.25 * 365.25 * 86400;    // 0.25 模拟年 / 实际秒 ≈ 7.89e6
+
 
 // 拖拽平移状态
 let dragging = false;
@@ -19,6 +27,16 @@ document.addEventListener('DOMContentLoaded', () => {
 	canvas = document.querySelector('canvas')!;
 	assets = document.querySelector('img')!;
 	initRenderer(canvas, assets);
+    function applySlider() {
+        const t = +slider.value / +slider.max;              // 0..1
+        const speed = SLIDER_MIN * Math.pow(SLIDER_MAX / SLIDER_MIN, t);         // 对数插值
+        setTimeScale(speed);
+        label.textContent = formatSpeed(speed);
+    }
+
+    slider.addEventListener('input', applySlider);
+    applySlider();   // 初始化
+
 
 	canvas.addEventListener('mousemove', (e) => {
 		mouse.mouseX = e.offsetX;
@@ -100,6 +118,7 @@ let lastMove = Date.now();
 let patterns_last10: string[] = [];
 // window.patterns_last10 = patterns_last10;
 document.addEventListener('keydown', (e) => {
+    
 	const key = e.key;
 
 	// console.log(key);
@@ -107,6 +126,17 @@ document.addEventListener('keydown', (e) => {
 	if (patterns_last10.length > 10) {
 		patterns_last10.shift();
 	}
+
+    const total = WORLD.objects.length;
+    const pageCount = Math.max(1, Math.ceil(total / pager.pageSize));
+
+    if (e.key === 'PageDown') {
+        pager.pageIndex = (pager.pageIndex + 1) % pageCount;
+        e.preventDefault();
+    } else if (e.key === 'PageUp') {
+        pager.pageIndex = (pager.pageIndex - 1 + pageCount) % pageCount;
+        e.preventDefault();
+    }
 });
 
 

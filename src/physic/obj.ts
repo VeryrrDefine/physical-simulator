@@ -5,11 +5,17 @@ export class PhysicObject{
     mass: number;
     position: Complex;
     velocity: Complex = new Complex(0,0);
-    constructor(mass: number = 1, pos: Complex = new Complex(0,0)) {
+    constructor(mass: number = 1, pos: Complex = new Complex(0,0), color: string = "#ffffff") {
         this.mass = mass;
         this.position = pos;
+        this.color = color;
     }
-
+    color: string;
+    text: string = "Default Planet";
+    setText(x: string) {
+        this.text = x
+        return this;
+    }
 }
 
 export class Force{
@@ -29,6 +35,7 @@ export function createPlanetAroundSun(
     mass: number,
     distanceAU: number,
     angle: number = 0,          // 新增：初始角度（弧度）
+    color: string = "#ffffff",
     centerMass: number = M_SUN,
 ) {
     const r = distanceAU * AU;
@@ -36,6 +43,7 @@ export function createPlanetAroundSun(
     const obj = new PhysicObject(
         mass,
         new Complex(r * Math.cos(angle), r * Math.sin(angle)),
+        color
     );
     obj.velocity = new Complex(-v * Math.sin(angle), v * Math.cos(angle));
     return obj;

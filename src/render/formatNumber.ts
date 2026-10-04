@@ -14,7 +14,24 @@ export function formatNumber(v: number): string {
 export function formatComplex(x :Complex) {
     return `${formatNumber(x.real)}${x.im>=0?"+":""}${formatNumber(x.im)}i`
 }
+export function formatSpeed(s: number): string {
+    const year = 31536000;
+    if (s < 60)     return `${s.toFixed(2)} s / s`;
+    if (s < 3600)   return `${(s / 60).toFixed(2)} min / s`;
+    if (s < 86400)  return `${(s / 3600).toFixed(2)} h / s`;
+    if (s < year)   return `${(s / 86400).toFixed(2)} d / s`;
+    return `${(s / year).toFixed(3)} y / s`;
+}
 export function formatTime(x: number) {
+    if (x>=31536000) {
+        return `${formatNumber(x/31536000)}y`
+    }
+    if (x>=86400) {
+        return `${formatNumber(x/86400)} d`
+    }
+    if (x>=3600) {
+        return `${formatNumber(x/3600)} h`
+    }
     return `${formatNumber(x)} s`
 } 
 export function formatMass(x: number) {
