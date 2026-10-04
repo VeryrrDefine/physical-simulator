@@ -20,7 +20,4 @@ export class Complex {
     mult(y: number) {
         return new Complex(this.real * y, this.im * y);
     }
-    conjecture() {
-        return new Complex(this.real , -this.im)
-    }
 }
