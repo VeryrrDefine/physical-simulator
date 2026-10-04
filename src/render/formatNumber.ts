@@ -1,30 +1,20 @@
 import type { Complex } from "../math/complex";
 import { M_EARTH, M_SUN } from "../physic/constants";
 
-export function formatNumber(x: number): string {
-    if (x<0) return `-${formatNumber(-x)}`
-    if (x < 0.1) {
-        return x.toExponential(4)
+export function formatNumber(v: number): string {
+    if (v === 0) return '0';
+    const a = Math.abs(v);
+    if (a >= 1e3 || a < 1e-3) {
+        const exp = Math.floor(Math.log10(a));
+        const mant = v / Math.pow(10, exp);
+        return `${mant.toFixed(3)}e${exp}`;
     }
-    if (x < 10000) {
-        return x.toFixed(4);
-    }
-
-    return x.toExponential(4);
+    return v.toFixed(3);
 }
 export function formatComplex(x :Complex) {
     return `${formatNumber(x.real)}${x.im>=0?"+":""}${formatNumber(x.im)}i`
 }
 export function formatTime(x: number) {
-    // if (x>=31558153) {
-    //     return `${formatNumber(x/31558153)}y`
-    // }
-    // if (x>=86400) {
-    //     return `${formatNumber(x/86400)} d`
-    // }
-    // if (x>=3600) {
-    //     return `${formatNumber(x/3600)} h`
-    // }
     return `${formatNumber(x)} s`
 } 
 export function formatMass(x: number) {

@@ -28,6 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     canvas.addEventListener('mousedown', (e) => {
         dragging = true;
+        VIEW.follow(null);
         dragStartX = e.offsetX;
         dragStartY = e.offsetY;
         // 记住起点时的 center，注意要拷贝一份，别直接引用
@@ -62,6 +63,35 @@ document.addEventListener('DOMContentLoaded', () => {
 	canvas.addEventListener('click', () => {});
 
 	canvas.addEventListener('dblclick', () => {});
+
+    canvas.addEventListener('wheel', (e) => {
+    e.preventDefault();                 // 阻止页面滚动
+    lastMove = Date.now();
+
+    const oldZoom = VIEW.zoom;
+    const factor = 2 ** (-e.deltaY / 300);
+    const newZoom = oldZoom * factor;
+
+    // 限制缩放范围，防止变成 0 或 Infinity
+    const MIN_ZOOM = 1e-20;
+    const MAX_ZOOM = 1e3;
+    if (newZoom < MIN_ZOOM || newZoom > MAX_ZOOM) return;
+
+    const mx = mouse.mouseX;
+    const my = mouse.mouseY;
+
+     if (VIEW.followed) {
+        // 跟随：以天体为中心缩放，center 不动
+        VIEW.zoom = newZoom;
+    } else {
+        // 自由视角：以鼠标为中心缩放
+        const k = 1 / oldZoom - 1 / newZoom;
+        VIEW.center.real += (mx - VIEW.width  / 2) * k;
+        VIEW.center.im   -= (my - VIEW.height / 2) * k;
+        VIEW.zoom = newZoom;
+    }
+}, { passive: false });   // 必须 passive:false 才能 preventDefault
+
 	setInterval(() => renderGame(), 50);
 	//   setInterval(() => save(), 1000);
 	  setInterval(() => loop(), 50);
@@ -79,12 +109,8 @@ document.addEventListener('keydown', (e) => {
 	}
 });
 
-document.addEventListener('wheel', function (e) {
-	lastMove = Date.now();
-    // e.deltaX
-    VIEW.zoom *= 2**(-e.deltaY/300)
-});
 
 
 window.WORLD = WORLD;
 window.Complex = Complex;
+window.VIEW = VIEW;

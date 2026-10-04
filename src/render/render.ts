@@ -1,6 +1,8 @@
 import { assets } from './assets';
 import { FONT } from './font';
+import { drawGridAndAxes } from './grid';
 import { drawUI, UI } from './ui';
+import { VIEW } from './view';
 
 export let ctx: CanvasRenderingContext2D;
 
@@ -15,6 +17,8 @@ export function renderGame() {
 	ctx.fillStyle = '#000';
 	ctx.fillRect(0, 0, 2000, 2000);
 
+	VIEW.applyFollow();
+	drawGridAndAxes(ctx);
 	for (const ui of UI) {
 		drawUI(ui, ctx);
 	}

@@ -1,5 +1,5 @@
 import {Complex} from '../math/complex';
-import { createPlanetAroundSun, Force, PhysicObject } from './obj';
+import { createPlanetAroundSun, createSatelliteAround, Force, PhysicObject } from './obj';
 import { AU, G, M_EARTH, M_SUN } from './constants';
 import {  oneize } from './math';
 
@@ -51,14 +51,16 @@ export class World {
         this.time+=seconds
     }
 }
+// 先建好行星
+const earth = createPlanetAroundSun(M_EARTH, 1, 4.0);       // 角度 4.0
+const moon  = createSatelliteAround(earth, 7.342e22, 3.844e8, 0);  // 地月距离 384400 km
 
-export const WORLD = new World(
-    [
-        new PhysicObject(M_SUN, new Complex(0, 0)),
-        createPlanetAroundSun(3.3011e23, 0.307499),
-        createPlanetAroundSun(4.8675e24, 0.718440),
-        createPlanetAroundSun(M_EARTH, 1),
-        createPlanetAroundSun(6.4171e23, 1.382),
-        createPlanetAroundSun(1.8982e27, 4.9501),
-    ]
-);
+export const WORLD = new World([
+    new PhysicObject(M_SUN, new Complex(0, 0)),
+    createPlanetAroundSun(3.3011e23, 0.387, 0),
+    createPlanetAroundSun(4.8675e24, 0.723, 2.1),
+    earth,
+    moon,
+    createPlanetAroundSun(6.4171e23, 1.524, 5.6),
+    createPlanetAroundSun(1.8982e27, 5.203, 1.2),
+]);
